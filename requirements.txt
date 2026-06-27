@@ -1,0 +1,6 @@
+pandas==3.0.3
+sqlalchemy==2.0.51
+pymysql==1.2.0
+python-dotenv==1.2.2
+pytest==9.1.1
+pytest-cov==7.1.0
