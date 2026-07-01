@@ -124,7 +124,7 @@ def generate_sessions(core_engine):
                 "session_ts": row["ordered_at"] - pd.Timedelta(minutes=30 * (5 - i))
             })
 
-    # Add ~40% extra sessions that DROP OFF before purchase (realism)
+    # Add ~40% extra sessions that DROP OFF before purchase (real)
     n_abandoned = int(len(orders) * 0.4)
     for _ in range(n_abandoned):
         drop_stage = np.random.choice([1, 2, 3, 4], p=[0.15, 0.30, 0.35, 0.20])
