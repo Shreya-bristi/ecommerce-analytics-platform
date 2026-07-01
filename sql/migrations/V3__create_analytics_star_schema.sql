@@ -22,7 +22,7 @@ CREATE TABLE dim_date (
 
 CREATE TABLE dim_customer (
     customer_key    INT AUTO_INCREMENT PRIMARY KEY,
-    customer_id     INT NOT NULL,              -- FK back to core
+    customer_id     INT NOT NULL,              
     unique_id       VARCHAR(50),
     city            VARCHAR(100),
     state           VARCHAR(5),
