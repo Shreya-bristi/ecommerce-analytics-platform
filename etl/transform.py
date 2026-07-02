@@ -8,6 +8,7 @@ import pandas as pd
 import numpy as np
 import hashlib
 from config import get_engine
+from sqlalchemy import text
 
 def deterministic_variant(session_id: str, experiment: str) -> str:
     """Assign A/B variant deterministically using a hash.
@@ -41,7 +42,7 @@ def transform_customers(stg_engine, core_engine):
     })
     df["city"] = df["city"].str.title().str.strip()
     df.to_sql("customers", core_engine, if_exists="append", index=False)
-    print(f"  ✓ {len(df):,} customers (deduped from {len(pd.read_sql('SELECT COUNT(*) FROM stg_customers', stg_engine).iloc[0,0]):,})")
+    
     return df
 
 def transform_products(stg_engine, core_engine):
@@ -70,6 +71,7 @@ def transform_orders(stg_engine, core_engine):
     customers = pd.read_sql("SELECT customer_id, source_id FROM customers", core_engine)
 
     orders = orders.merge(customers, left_on="customer_id", right_on="source_id", how="left")
+    orders = orders.drop(columns=["source_id"])  # ← add this line
 
     orders = orders.rename(columns={
         "order_id": "source_id",
@@ -93,6 +95,33 @@ def transform_orders(stg_engine, core_engine):
     orders.to_sql("orders", core_engine, if_exists="append", index=False)
     print(f"  ✓ {len(orders):,} orders")
     return orders
+
+def transform_order_items(stg_engine, core_engine):
+    """Map order_items to core surrogate keys."""
+    items = pd.read_sql("SELECT * FROM stg_order_items", stg_engine)
+    orders = pd.read_sql("SELECT order_id, source_id FROM orders", core_engine)
+    products = pd.read_sql("SELECT product_id, source_id FROM products", core_engine)
+
+    items = items.merge(orders, left_on="order_id", right_on="source_id", how="left")
+    items = items.merge(products, left_on="product_id", right_on="source_id", how="left", suffixes=("", "_prod"))
+
+    items = items.rename(columns={
+        "order_item_id": "item_seq",
+        "price": "unit_price",
+        "freight_value": "freight"
+    })
+
+    
+    items = items[["order_id_y", "product_id_prod", "item_seq", "unit_price", "freight"]]
+    items.columns = ["order_id", "product_id", "item_seq", "unit_price", "freight"]
+    items.columns = ["order_id", "product_id", "item_seq", "unit_price", "freight"]
+    items = items.dropna(subset=["order_id", "product_id"])
+    items["order_id"] = items["order_id"].astype(int)
+    items["product_id"] = items["product_id"].astype(int)
+
+    items.to_sql("order_items", core_engine, if_exists="append", index=False)
+    print(f"  \u2713 {len(items):,} order_items")
+    return items
 
 def generate_sessions(core_engine):
     """
@@ -187,11 +216,18 @@ def generate_ab_events(core_engine):
 
     df = pd.DataFrame(ab_events)
     df.to_sql("ab_events", core_engine, if_exists="append", index=False)
-    print(f"  ✓ {len(df):,} A/B events (homepage_v2 experiment)")
+    print(f"  \u2713 {len(df):,} A/B events (homepage_v2 experiment)")
 
 def run_all():
     stg = get_engine("ecom_staging")
     core = get_engine("ecom_core")
+
+    # Clear core tables in FK-safe order for idempotent re-runs
+    with core.begin() as conn:
+        for t in ["ab_events", "sessions", "order_items", "orders",
+                  "products", "customers", "campaigns", "categories"]:
+            conn.execute(text(f"DELETE FROM {t}"))
+            conn.execute(text(f"ALTER TABLE {t} AUTO_INCREMENT = 1"))
 
     print("--- Categories ---")
     transform_categories(stg, core)
@@ -201,6 +237,8 @@ def run_all():
     transform_products(stg, core)
     print("--- Orders ---")
     transform_orders(stg, core)
+    print("--- Order Items ---")
+    transform_order_items(stg, core)
     print("--- Sessions (synthetic) ---")
     generate_sessions(core)
     print("--- Campaigns (synthetic) ---")

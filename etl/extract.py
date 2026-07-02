@@ -24,7 +24,7 @@ def extract_all():
         print(f"  Loading {csv_file} → {table_name}...")
         df = pd.read_csv(f"{DATA_DIR}/{csv_file}")
 
-        with engine.connect() as conn:
+        with engine.begin() as conn:
             conn.execute(text(f"TRUNCATE TABLE {table_name}"))
 
         df.to_sql(table_name, engine, if_exists="append", index=False)

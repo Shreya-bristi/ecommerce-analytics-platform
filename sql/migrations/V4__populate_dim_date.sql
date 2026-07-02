@@ -1,4 +1,5 @@
 USE ecom_analytics;
+SET cte_max_recursion_depth = 2000;
 
 -- Generate dates from 2016-01-01 to 2019-12-31
 INSERT INTO dim_date (date_key, full_date, day_of_week, day_name,
