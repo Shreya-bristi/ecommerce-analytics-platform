@@ -4,6 +4,7 @@ Idempotent: safe to re-run (TRUNCATE + INSERT).
 """
 import pandas as pd
 from config import get_engine
+from sqlalchemy import text
 
 DATA_DIR = "../data/raw"
 
@@ -24,7 +25,7 @@ def extract_all():
         df = pd.read_csv(f"{DATA_DIR}/{csv_file}")
 
         with engine.connect() as conn:
-            conn.execute(f"TRUNCATE TABLE {table_name}")
+            conn.execute(text(f"TRUNCATE TABLE {table_name}"))
 
         df.to_sql(table_name, engine, if_exists="append", index=False)
         print(f"  ✓ {len(df):,} rows loaded")

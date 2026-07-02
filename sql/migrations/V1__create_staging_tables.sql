@@ -7,9 +7,9 @@ CREATE TABLE stg_orders(
     order_status VARCHAR(20),
     order_purchase_timestamp VARCHAR(30),
     order_approved_at VARCHAR(30),
-    order_delivered_carrier VARCHAR(30),
-    order_delivered_customer VARCHAR(50),
-    order_estimated_delivery VARCHAR(30)
+    order_delivered_carrier_date VARCHAR(30),
+    order_delivered_customer_date VARCHAR(50),
+    order_estimated_delivery_date VARCHAR(30)
 
 );
 
@@ -19,7 +19,7 @@ CREATE TABLE stg_order_items(
     order_item_id INT,
     product_id VARCHAR(50),
     seller_id VARCHAR(50),
-    shipping_limit VARCHAR(30),
+    shipping_limit_date VARCHAR(30),
     price DECIMAL(10,2),
     freight_value DECIMAL(10,2)
 
@@ -38,8 +38,8 @@ DROP TABLE IF EXISTS stg_products;
 CREATE TABLE stg_products (
     product_id                VARCHAR(50),
     product_category_name     VARCHAR(100),
-    product_name_length       INT,
-    product_description_length INT,
+    product_name_lenght       INT,
+    product_description_lenght INT,
     product_photos_qty        INT,
     product_weight_g          INT,
     product_length_cm         INT,
