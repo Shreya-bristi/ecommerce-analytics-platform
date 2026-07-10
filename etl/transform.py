@@ -26,7 +26,7 @@ def transform_categories(stg_engine, core_engine):
         "product_category_name_english": "name_en"
     })
     df.to_sql("categories", core_engine, if_exists="append", index=False)
-    print(f"  ✓ {len(df)} categories")
+    print(f"  \u2713 {len(df)} categories")
     return df
 
 def transform_customers(stg_engine, core_engine):
@@ -62,7 +62,7 @@ def transform_products(stg_engine, core_engine):
     products.columns = ["source_id", "category_id", "weight_g",
                         "length_cm", "height_cm", "width_cm"]
     products.to_sql("products", core_engine, if_exists="append", index=False)
-    print(f"  ✓ {len(products):,} products")
+    print(f"  \u2713 {len(products):,} products")
     return products
 
 def transform_orders(stg_engine, core_engine):
@@ -93,7 +93,7 @@ def transform_orders(stg_engine, core_engine):
     orders = orders[["source_id", "customer_id", "status", "ordered_at",
                      "approved_at"]].dropna(subset=["customer_id"])
     orders.to_sql("orders", core_engine, if_exists="append", index=False)
-    print(f"  ✓ {len(orders):,} orders")
+    print(f"  \u2713 {len(orders):,} orders")
     return orders
 
 def transform_order_items(stg_engine, core_engine):
@@ -172,7 +172,7 @@ def generate_sessions(core_engine):
 
     df = pd.DataFrame(sessions)
     df.to_sql("sessions", core_engine, if_exists="append", index=False)
-    print(f"  ✓ {len(df):,} sessions generated (with funnel drop-offs)")
+    print(f"  \u2713 {len(df):,} sessions generated (with funnel drop-offs)")
 
 def generate_campaigns(core_engine):
     """SYNTHETIC: Create marketing campaign data for ROAS analysis."""
@@ -187,25 +187,26 @@ def generate_campaigns(core_engine):
         {"channel": "direct",         "name": "Brand Awareness",   "budget": 15000, "spend": 14200, "start_dt": "2017-01-01", "end_dt": "2017-12-31"},
     ])
     campaigns.to_sql("campaigns", core_engine, if_exists="append", index=False)
-    print(f"  ✓ {len(campaigns)} campaigns")
+    print(f"  \u2713 {len(campaigns)} campaigns")
 
 def generate_ab_events(core_engine):
     """SYNTHETIC: Assign A/B test variants to sessions deterministically."""
     sessions = pd.read_sql("""
-        SELECT session_id, stage, stage_order
+        SELECT session_id
         FROM sessions
-        WHERE stage IN ('checkout', 'purchase')
+        WHERE stage_order = 1
         LIMIT 30000
     """, core_engine)
 
     ab_events = []
     for _, row in sessions.iterrows():
         variant = deterministic_variant(str(row["session_id"]), "homepage_v2")
-        converted = 1 if row["stage"] == "purchase" else 0
-
-        # Variant group gets a 12% lift in conversion (simulated)
-        if variant == "variant" and not converted:
-            converted = 1 if np.random.random() < 0.12 else 0
+        
+        # Control: 12% conversion, Variant: 15% conversion (3% lift)
+        if variant == "control":
+            converted = 1 if np.random.RandomState(int(row["session_id"])).random() < 0.12 else 0
+        else:
+            converted = 1 if np.random.RandomState(int(row["session_id"]) + 1).random() < 0.15 else 0
 
         ab_events.append({
             "session_id": row["session_id"],
@@ -215,7 +216,7 @@ def generate_ab_events(core_engine):
         })
 
     df = pd.DataFrame(ab_events)
-    df.to_sql("ab_events", core_engine, if_exists="append", index=False)
+    df.to_sql("ab_events", core_engine, if_exists="replace", index=False)
     print(f"  \u2713 {len(df):,} A/B events (homepage_v2 experiment)")
 
 def run_all():

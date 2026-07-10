@@ -27,7 +27,7 @@ def load_dim_customers(core_engine, analytics_engine):
         lambda x: "vip" if x >= 3 else ("returning" if x >= 2 else "new")
     )
     df.to_sql("dim_customer", analytics_engine, if_exists="append", index=False)
-    print(f"  ✓ {len(df):,} dim_customer rows")
+    print(f"  \u2713 {len(df):,} dim_customer rows")
 
 def load_dim_products(core_engine, analytics_engine):
     df = pd.read_sql("""
@@ -44,7 +44,7 @@ def load_dim_products(core_engine, analytics_engine):
         GROUP BY p.product_id, p.source_id, cat.name_en, cat.name_pt, p.weight_g
     """, core_engine)
     df.to_sql("dim_product", analytics_engine, if_exists="append", index=False)
-    print(f"  ✓ {len(df):,} dim_product rows")
+    print(f"  \u2713 {len(df):,} dim_product rows")
 
 def load_fact_orders(core_engine, analytics_engine):
     df = pd.read_sql("""
@@ -69,7 +69,7 @@ def load_fact_orders(core_engine, analytics_engine):
     df = df.drop(columns=["customer_id"])
 
     df.to_sql("fact_orders", analytics_engine, if_exists="append", index=False)
-    print(f"  ✓ {len(df):,} fact_orders rows")
+    print(f"  \u2713 {len(df):,} fact_orders rows")
 
 
 def load_dim_channels(analytics_engine):
@@ -131,6 +131,37 @@ def load_dim_campaigns(core_engine, analytics_engine):
     df.to_sql("dim_campaign", analytics_engine, if_exists="append", index=False)
     print(f"  \u2713 {len(df)} dim_campaign rows")
 
+def load_fact_ab_events(core_engine, analytics_engine):
+    df = pd.read_sql("""
+        SELECT
+            ae.session_id,
+            ae.experiment_id,
+            ae.variant,
+            ae.converted
+        FROM ab_events ae
+    """, core_engine)
+
+    # Map session_id to session_key
+    dim_sess = pd.read_sql(
+        "SELECT session_key, session_id FROM fact_sessions", analytics_engine
+    )
+    df = df.merge(dim_sess, on="session_id", how="left")
+
+    # Get date_key from fact_sessions
+    sess_dates = pd.read_sql(
+        "SELECT session_id, date_key FROM fact_sessions", analytics_engine
+    )
+    df = df.merge(sess_dates, on="session_id", how="left")
+    df = df.rename(columns={"date_key": "event_date_key"})
+
+    df = df[["session_key", "experiment_id", "variant", "converted", "event_date_key"]]
+    df = df.dropna(subset=["session_key"])
+    df["session_key"] = df["session_key"].astype(int)
+    df["event_date_key"] = df["event_date_key"].astype(int)
+
+    df.to_sql("fact_ab_events", analytics_engine, if_exists="append", index=False)
+    print(f"  \u2713 {len(df):,} fact_ab_events rows")
+
 def run_all():
     core = get_engine("ecom_core")
     analytics = get_engine("ecom_analytics")
@@ -142,6 +173,7 @@ def run_all():
                   "dim_customer", "dim_product", "dim_channel", "dim_campaign"]:
             conn.execute(text(f"TRUNCATE TABLE {t}"))
         conn.execute(text("SET FOREIGN_KEY_CHECKS = 1"))
+
 
     print("--- dim_customer ---")
     load_dim_customers(core, analytics)
@@ -155,6 +187,8 @@ def run_all():
     load_fact_sessions(core, analytics)
     print("--- dim_campaign ---")
     load_dim_campaigns(core, analytics)
+    print("--- fact_ab_events ---")
+    load_fact_ab_events(core, analytics)
     
 
 if __name__ == "__main__":
