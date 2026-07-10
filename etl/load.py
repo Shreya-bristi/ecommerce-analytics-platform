@@ -123,6 +123,14 @@ def load_fact_sessions(core_engine, analytics_engine):
     df.to_sql("fact_sessions", analytics_engine, if_exists="append", index=False)
     print(f"  \u2713 {len(df):,} fact_sessions rows")
 
+def load_dim_campaigns(core_engine, analytics_engine):
+    df = pd.read_sql("""
+        SELECT campaign_id, channel, name, budget, spend
+        FROM campaigns
+    """, core_engine)
+    df.to_sql("dim_campaign", analytics_engine, if_exists="append", index=False)
+    print(f"  \u2713 {len(df)} dim_campaign rows")
+
 def run_all():
     core = get_engine("ecom_core")
     analytics = get_engine("ecom_analytics")
@@ -145,6 +153,8 @@ def run_all():
     load_fact_orders(core, analytics)
     print("--- fact_sessions ---")
     load_fact_sessions(core, analytics)
+    print("--- dim_campaign ---")
+    load_dim_campaigns(core, analytics)
     
 
 if __name__ == "__main__":
