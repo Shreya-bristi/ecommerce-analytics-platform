@@ -22,11 +22,12 @@ WITH RECURSIVE cat_tree AS (
         c.category_id,
         c.name_en,
         c.parent_id,
-        CONCAT(ct.full_path, ' > ', c.name_en),
-        ct.depth + 1
+        CONCAT(ct.full_path, ' > ', c.name_en) AS full_path,
+        ct.depth + 1 AS depth
     FROM categories c
     JOIN cat_tree ct ON c.parent_id = ct.category_id
 )
+
 SELECT
     ct.full_path       AS category_path,
     ct.depth,
@@ -35,7 +36,7 @@ SELECT
     ROUND(AVG(oi.unit_price), 2) AS avg_item_price,
     RANK() OVER (ORDER BY SUM(oi.unit_price) DESC) AS revenue_rank
 FROM cat_tree ct
-JOIN products p USING (category_id)
+JOIN products USING (category_id)
 JOIN order_items oi USING (product_id)
 JOIN orders o USING (order_id)
 GROUP BY ct.full_path, ct.depth

@@ -50,9 +50,11 @@ CREATE TABLE orders (
     source_id         VARCHAR(50) UNIQUE NOT NULL,
     customer_id       INT NOT NULL,
     campaign_id       INT NULL,
-    status            ENUM('created','approved','invoiced','shipped',
-                           'delivered','canceled','unavailable','processing')
-                      NOT NULL DEFAULT 'created',
+    status            ENUM(
+        'created','approved','invoiced','shipped',
+        'delivered','canceled','unavailable','processing'
+    )
+    NOT NULL DEFAULT 'created',
     ordered_at        DATETIME NOT NULL,
     approved_at       DATETIME,
     delivered_carrier DATETIME,
@@ -82,7 +84,7 @@ CREATE TABLE sessions (
     order_id      INT NULL,
     channel       VARCHAR(30),
     stage         ENUM('visit','product_view','add_to_cart','checkout','purchase')
-                  NOT NULL DEFAULT 'visit',
+    NOT NULL DEFAULT 'visit',
     stage_order   TINYINT NOT NULL DEFAULT 1,
     session_ts    DATETIME NOT NULL,
     FOREIGN KEY (customer_id) REFERENCES customers(customer_id),

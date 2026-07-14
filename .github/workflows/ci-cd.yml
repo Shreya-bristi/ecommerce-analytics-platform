@@ -15,7 +15,8 @@ jobs:
       - name: Install sqlfluff
         run: pip install sqlfluff
       - name: Lint SQL
-        run: sqlfluff lint sql/ --dialect mysql --exclude-rules LT12
+        run: sqlfluff lint sql/ --dialect mysql
+      
 
   test-etl:
     name: Test ETL Pipeline

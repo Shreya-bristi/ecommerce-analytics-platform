@@ -1,0 +1,4 @@
+[sqlfluff]
+dialect = mysql
+max_line_length = 120
+exclude_rules = LT01, RF04, ST07, AM05, AL01

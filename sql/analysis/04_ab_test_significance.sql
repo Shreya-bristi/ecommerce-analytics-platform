@@ -15,9 +15,11 @@ WITH summary AS (
     WHERE experiment_id = 'homepage_v2'
     GROUP BY variant
 ),
+
 pooled AS (
     SELECT SUM(conversions) / SUM(n) AS p_pool FROM summary
 ),
+
 ztest AS (
     SELECT
         ctrl.n          AS n_control,
@@ -27,13 +29,15 @@ ztest AS (
         var.conversions  AS conv_variant,
         var.conversion_rate AS cvr_variant,
         p.p_pool,
-        (var.conversion_rate - ctrl.conversion_rate) /
-            SQRT(p.p_pool * (1 - p.p_pool) * (1/var.n + 1/ctrl.n))
-                        AS z_score
+        (var.conversion_rate - ctrl.conversion_rate)
+        / SQRT(p.p_pool * (1 - p.p_pool) * (1/var.n + 1/ctrl.n))
+            AS z_score
     FROM summary ctrl, summary var, pooled p
-    WHERE ctrl.variant = 'control'
-      AND var.variant  = 'variant'
+    WHERE
+        ctrl.variant = 'control'
+        AND var.variant  = 'variant'
 )
+
 SELECT
     n_control,
     n_variant,

@@ -11,10 +11,12 @@ WITH first_purchase AS (
     FROM orders
     GROUP BY customer_id
 ),
+
 monthly_revenue AS (
     SELECT
         fp.cohort_month,
-        TIMESTAMPDIFF(MONTH,
+        TIMESTAMPDIFF(
+            MONTH,
             fp.cohort_month,
             DATE_FORMAT(o.ordered_at, '%Y-%m-01')
         ) AS month_number,
@@ -25,6 +27,7 @@ monthly_revenue AS (
     JOIN order_items oi USING (order_id)
     GROUP BY fp.cohort_month, month_number
 )
+
 SELECT
     cohort_month,
     month_number,

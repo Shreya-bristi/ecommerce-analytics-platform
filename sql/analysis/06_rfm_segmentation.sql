@@ -17,6 +17,7 @@ WITH rfm_raw AS (
     JOIN order_items oi USING (order_id)
     GROUP BY c.customer_id, c.city, c.state
 ),
+
 rfm_scored AS (
     SELECT
         *,
@@ -25,6 +26,7 @@ rfm_scored AS (
         NTILE(4) OVER (ORDER BY monetary ASC)         AS m_score
     FROM rfm_raw
 )
+
 SELECT
     customer_id,
     city,
@@ -32,7 +34,9 @@ SELECT
     recency_days,
     frequency,
     monetary,
-    r_score, f_score, m_score,
+    r_score,
+    f_score,
+    m_score,
     (r_score + f_score + m_score) AS rfm_total,
     CASE
         WHEN (r_score + f_score + m_score) >= 10 THEN 'Champion'

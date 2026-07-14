@@ -12,6 +12,7 @@ WITH funnel AS (
     FROM sessions
     GROUP BY stage, stage_order
 ),
+
 with_prev AS (
     SELECT
         stage,
@@ -20,6 +21,7 @@ with_prev AS (
         LAG(sessions) OVER (ORDER BY stage_order) AS prev_sessions
     FROM funnel
 )
+
 SELECT
     stage,
     sessions,
