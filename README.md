@@ -14,12 +14,12 @@
 
 ```mermaid
 flowchart TD
-    A[Phase 1: GitHub repo setup] --> B[Phase 2: Data + dependencies]
-    B --> C[Phase 3: MySQL schemas]
-    C --> D[Phase 4: ETL pipeline]
-    D --> E[Phase 5: SQL queries]
-    E --> F[Phase 6: Power BI dashboard]
-    F --> G[Phase 7: CI/CD + docs]
+    A[GitHub repo setup] --> B[Data + dependencies]
+    B --> C[MySQL schemas]
+    C --> D[ETL pipeline]
+    D --> E[SQL queries]
+    E --> F[PPower BI dashboard]
+    F --> G[CI/CD + docs]
 
     C --- H[Normalisation]
     C --- I[Data modelling]
