@@ -12,6 +12,22 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    A[Phase 1: GitHub repo setup] --> B[Phase 2: Data + dependencies]
+    B --> C[Phase 3: MySQL schemas]
+    C --> D[Phase 4: ETL pipeline]
+    D --> E[Phase 5: SQL queries]
+    E --> F[Phase 6: Power BI dashboard]
+    F --> G[Phase 7: CI/CD + docs]
+
+    C --- H[Normalisation]
+    C --- I[Data modelling]
+    C --- J[ER diagram]
+    D --- K[ETL pipeline]
+    D --- L[A/B testing]
+```
+
 
 
 ## Key Results
