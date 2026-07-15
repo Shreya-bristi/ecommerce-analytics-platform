@@ -10,6 +10,10 @@
 
 ---
 
+## Architecture
+
+![Architecture Diagram](docs/architecture.png)
+
 ## Key Results
 
 | Metric                         | Value                          |
