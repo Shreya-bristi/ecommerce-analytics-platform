@@ -230,7 +230,7 @@ Grain: one row per session-stage combination
 | variant | VARCHAR(10) | "control" or "variant" |
 | converted | BOOLEAN | TRUE if converted |
 
-one row per A/B test exposure
+Grain: one row per A/B test exposure
 
 ---
 
