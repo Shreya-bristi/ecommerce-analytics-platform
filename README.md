@@ -2,6 +2,8 @@
 
 *End-to-end analytics pipeline built on the Olist Brazilian E-Commerce dataset: from raw CSV ingestion through a normalised MySQL database and star schema to an interactive Power BI executive dashboard.*
 
+[![CI/CD Pipeline](https://github.com/Shreya-bristi/ecommerce-analytics-platform/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/Shreya-bristi/ecommerce-analytics-platform/actions/workflows/ci-cd.yml)
+
 
 ## Problem Statement
 
