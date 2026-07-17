@@ -42,6 +42,100 @@ ROAS attribution, and A/B-testing workflows.
 Results involving revenue and orders come from the source dataset.
 Funnel, campaign, and experiment results are simulated scenario outputs.
 
+
+## 📊 Dashboard Preview
+
+Interactive Power BI dashboards covering executive KPIs, purchase funnel
+performance, marketing ROAS, customer value, and A/B testing.
+
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <img
+        src="docs/ecommerce_analytics_executive_summary.jpg"
+        alt="E-Commerce Executive Summary Dashboard"
+        width="100%"
+      />
+      <br />
+      <strong>1. Executive Overview</strong>
+      <br />
+      <sub>
+        High-level KPIs, revenue trends, order volume, and customer-tier
+        distribution.
+      </sub>
+    </td>
+
+    <td width="50%" valign="top">
+      <img
+        src="docs/ecommerce_analytics_purchase_funnel.jpg"
+        alt="E-Commerce Purchase Funnel Dashboard"
+        width="100%"
+      />
+      <br />
+      <strong>2. Purchase Funnel</strong>
+      <br />
+      <sub>
+        Funnel conversion, stage-level drop-offs, channel filtering, and date
+        analysis.
+      </sub>
+    </td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td width="33%" valign="top">
+      <img
+        src="docs/ecommerce_analytics_marketing_ROAS.jpg"
+        alt="E-Commerce Marketing ROAS Dashboard"
+        width="100%"
+      />
+      <br />
+      <strong>3. Marketing ROAS</strong>
+      <br />
+      <sub>
+        Channel ROAS, campaign performance, CPA, spend, and attributed revenue.
+      </sub>
+    </td>
+
+    <td width="33%" valign="top">
+      <img
+        src="docs/ecommerce_analytics_Customer_value_analysis.jpg"
+        alt="E-Commerce Customer Value Dashboard"
+        width="100%"
+      />
+      <br />
+      <strong>4. Customer LTV and Cohorts</strong>
+      <br />
+      <sub>
+        Customer lifetime value by tier and revenue by first-purchase cohort.
+      </sub>
+    </td>
+
+    <td width="33%" valign="top">
+      <img
+        src="docs/ecommerce_analytics_ABtest_results.jpg"
+        alt="E-Commerce A/B Test Dashboard"
+        width="100%"
+      />
+      <br />
+      <strong>5. A/B Test Results</strong>
+      <br />
+      <sub>
+        Control-versus-variant conversion analysis with statistical
+        significance.
+      </sub>
+    </td>
+  </tr>
+</table>
+
+> **Note:** These are static previews of interactive Power BI dashboard pages.
+> Open the `.pbix` file in the `powerbi` folder to explore filters, slicers, and
+> interactions.
+
+
+
+
 ## Key Results
 
 | Metric                         | Value                          |
