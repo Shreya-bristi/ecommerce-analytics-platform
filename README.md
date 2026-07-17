@@ -5,7 +5,7 @@
 
 ## Problem Statement
 
-> Olist, a Brazilian e-commerce marketplace, generates transactional data across orders, customers, products, and marketing channels, but without a unified analytics system, this data sits in disconnected CSV exports with no visibility into business performance. This project transforms that raw data into a production-grade analytics platform: a normalised MySQL pipeline, six complex SQL analyses, and a five-page Power BI dashboard tracking $13.17M in revenue, funnel drop-offs, marketing ROAS, customer LTV cohorts, and A/B test significance — all version-controlled with CI/CD via GitHub Actions.
+> Olist, a Brazilian e-commerce marketplace, generates transactional data across orders, customers, products, and marketing channels, but without a unified analytics system, this data sits in disconnected CSV exports with no visibility into business performance. This project transforms that raw data into end-to-end analytics engineering and BI prototype: a normalised MySQL pipeline, six complex SQL analyses, and a five-page Power BI dashboard tracking $13.17M in revenue, funnel drop-offs, marketing ROAS, customer LTV cohorts, and A/B test significance — all version-controlled with CI/CD via GitHub Actions.
 
 
 ---
