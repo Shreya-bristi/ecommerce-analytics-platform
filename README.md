@@ -29,6 +29,16 @@ flowchart TD
 ```
 
 
+## Data Provenance
+
+The customer, order, product, payment, and order-item records come from
+the public Olist dataset. Because the source dataset does not contain
+website sessions, marketing campaigns, or controlled experiments, those
+tables are synthetically generated to demonstrate funnel analytics,
+ROAS attribution, and A/B-testing workflows.
+
+Results involving revenue and orders come from the source dataset.
+Funnel, campaign, and experiment results are simulated scenario outputs.
 
 ## Key Results
 
